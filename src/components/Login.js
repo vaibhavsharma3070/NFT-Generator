@@ -30,12 +30,15 @@ const Login = () => {
           //setLoader(false);
           alert("Login Successful.");
           navigate("/Home");
-          if (isAdmin) {
+          if (res.data.data.roles === null) {
+            navigate("/Home");
+          }
+          else {
             navigate("/Admin");
           }
         })
         .catch((err) => {
-          console.log("Error caught!",err);
+          console.log("Error caught!", err);
         });
     }
   };
@@ -44,19 +47,6 @@ const Login = () => {
     setFormError({ ...formError, [e.target.name]: "" });
   };
   return (
-    // <div class="container">
-
-    //     <label for="email"><b>Email</b></label><br />
-    //     <input type="text" placeholder="Enter email" name="email" value={formData.email} onChange={onClickHandler} />
-    //     <p style={{ color: "red" }}>{formError?.email}</p>
-
-    //     <label for="password"><b>Password</b></label><br />
-    //     <input type="password" placeholder="Enter Password" name="password" value={formData.password} onChange={onClickHandler} />
-    //     <p style={{ color: "red" }}>{formError?.password}</p>
-
-    //     <button type="submit" onClick={submitHandler}>Login</button>
-
-    // </div>
     <>
       <Container className="mb-4">
         <Row style={{ display: "flex", justifyContent: "center" }}>
