@@ -3,6 +3,7 @@ import { Button, Form } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import "./Admin.css";
 import {
+  getLayersOrder,
   ImageApi,
   saveDirectoryName,
   saveImageLimit,
@@ -12,6 +13,7 @@ import {
 
 const Admin = () => {
   const token = localStorage.getItem("token");
+  const [layerOrder, setLayerOrder] = React.useState()
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     accept: { "image/*": [] },
   });
@@ -20,6 +22,16 @@ const Admin = () => {
     layersOrder: [],
     imageLimit: "",
   });
+
+  useEffect(() => {
+    getLayersOrder(token)
+      .then((res) => {
+        setLayerOrder(res.data.data)
+      })
+      .catch((error) => {
+        console.log("error --> ", error);
+      });
+  }, [])
 
   useEffect(() => {
     setFileData(acceptedFiles);
@@ -39,7 +51,7 @@ const Admin = () => {
         ...layerConfiguration,
         layersOrder: [
           ...layerConfiguration.layersOrder,
-          { name: e.target.name },
+          parseInt(e.target.value),
         ],
       });
     } else {
@@ -54,16 +66,6 @@ const Admin = () => {
       });
     }
   };
-
-  const layerOrder = [
-    { name: "Background" },
-    { name: "Eyeball" },
-    { name: "Eye color" },
-    { name: "Iris" },
-    { name: "Shine" },
-    { name: "Bottom lid" },
-    { name: "Top lid" },
-  ];
 
   const uploadImage = () => {
     let formData = new FormData();
@@ -89,8 +91,7 @@ const Admin = () => {
   };
 
   const createDirectory = () => {
-    const data = { directoryName: layerConfiguration.directoryName };
-    console.log("createDirectory", data);
+    const data = { name: layerConfiguration.directoryName };
     saveDirectoryName(token, data)
       .then((res) => {
         console.log("directoryname", res);
@@ -101,8 +102,7 @@ const Admin = () => {
   };
 
   const saveLayerOrder = () => {
-    const data = { layersOrder: layerConfiguration.layersOrder };
-    console.log("saveLayerOrder", data);
+    const data = { status: true, id: layerConfiguration.layersOrder };
     saveLayersOrder(token, data)
       .then((res) => {
         console.log("layerOrder", res);
@@ -113,8 +113,7 @@ const Admin = () => {
   };
 
   const SubmitImageNumber = () => {
-    const data = { imageLimit: layerConfiguration.imageLimit };
-    console.log("SubmitImageNumber", data);
+    const data = { number: parseInt(layerConfiguration.imageLimit) };
     saveImageLimit(token, data)
       .then((res) => {
         console.log("imagenumber", res);
@@ -147,8 +146,12 @@ const Admin = () => {
               <div
                 {...getRootProps({ className: "dropzone" })}
                 style={{ cursor: "pointer" }}
-              >
-                <p>Drag 'n' drop some files here, or click to select files</p>
+              > <input
+                  type="file"
+
+                  style={{ display: "none" }}
+                />
+                <p>  Drag 'n' drop some files here, or click to select files</p>
               </div>
               <aside>
                 <h4>Files</h4>
@@ -157,25 +160,21 @@ const Admin = () => {
 
               <Button className="upload-image my-2" onClick={uploadImage}>
                 Upload
-                <input
-                  type="file"
-                  {...getInputProps()}
-                  style={{ display: "block" }}
-                />
+
               </Button>
             </div>
           </div>
           <div className="col-lg-4">
             <div className="nft-machine-box">
-              {layerOrder.map((data) => (
+              {layerOrder?.map((data) => (
                 <>
                   {/* <Form.Label for={data.name}> {data.name}</Form.Label> */}
                   <Form.Check
-                    label={data.name}
+                    label={data.layertype_name}
                     type="checkbox"
                     id={data.name}
-                    name={data.name}
-                    value={data.name}
+                    name={data.layertype_name}
+                    value={data.layertype_id}
                     onClick={(e) => selectedLayersOrder(e)}
                   />
                 </>
@@ -185,17 +184,13 @@ const Admin = () => {
           </div>
           <div className="col-lg-4">
             <div className="nft-machine-box">
-
               <Form.Label>Enter number of image length</Form.Label>
-
-
               <Form.Control
                 type="text"
                 name="imageLimit"
                 placeholder="5"
                 onChange={(e) => handleChange(e)}
               />
-
               <Button className="my-2" onClick={() => SubmitImageNumber()}>submit</Button>
             </div>
           </div>

@@ -16,7 +16,7 @@ export const GenerateApi = (token) =>
   });
 
 export const UploadImages = (token, data) =>
-  axios.get(
+  axios.post(
     `${process.env.REACT_APP_BASE_URL}/user/storeImage`,
     {
       headers: {
@@ -30,7 +30,7 @@ export const UploadImages = (token, data) =>
 
 export const saveDirectoryName = (token, data) =>
   axios.post(
-    `${process.env.REACT_APP_BASE_URL}/user/directoryName`,
+    `${process.env.REACT_APP_BASE_URL}/layer/savelayer`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -41,9 +41,21 @@ export const saveDirectoryName = (token, data) =>
     data
   );
 
+export const getLayersOrder = (token, data) =>
+  axios.get(
+    `${process.env.REACT_APP_BASE_URL}/layer/layertypelist`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "content-type": "application/json",
+        accept: "application/json",
+      },
+    },
+    data
+  );
 export const saveLayersOrder = (token, data) =>
-  axios.post(
-    `${process.env.REACT_APP_BASE_URL}/user/layersOrder`,
+  axios.put(
+    `${process.env.REACT_APP_BASE_URL}/layer/updatelayer`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -54,8 +66,8 @@ export const saveLayersOrder = (token, data) =>
     data
   );
 export const saveImageLimit = (token, data) =>
-  axios.post(
-    `${process.env.REACT_APP_BASE_URL}/user/imageLimit`,
+  axios.put(
+    `${process.env.REACT_APP_BASE_URL}/config/updateconfig`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
