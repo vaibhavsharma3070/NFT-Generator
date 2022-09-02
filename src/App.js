@@ -8,26 +8,29 @@ import NotFound from "./pages/NotFound";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import Admin from "./pages/Admin";
+import { PublicRoute } from "./PublicRoute/PublicRoute";
+import { PrivateRoute } from "./PrivateRoute/PrivateRoute";
+import { ProtectedAdminRoute } from "./ProtectedRoute/ProtectedAdminRoute";
+import { ProtectedUserRoute } from "./ProtectedRoute/ProtectedUserRoute";
 
 const App = () => {
-  const ProtectedRoute = () => {
-    const token = localStorage.getItem("token");
-    return token ? <Outlet /> : <Navigate to="/Login" />;
-  };
 
   return (
     <Layout>
       <Container>
         <Routes>
-          <Route element={<ProtectedRoute />}>
-            <Route path="/Home" element={<Home />} exact />
-            <Route path="/Admin" element={<Admin />} exact />
+          <Route element={<PrivateRoute />}>
+            <Route element={<ProtectedUserRoute />}>
+              <Route path="/Home" element={<Home />} />
+            </Route>
+            <Route element={<ProtectedAdminRoute />}>
+              <Route path="/Admin" element={<Admin />} />
+            </Route>
           </Route>
-          {/* <Route element={<PublicRoute />}> */}
-          <Route path="/Login" element={<Login />} />
-          <Route path="/" element={<SignUp />} />
-
-          {/* </Route> */}
+          <Route element={<PublicRoute />}>
+            <Route path="/Login" element={<Login />} />
+            <Route index path="/" element={<SignUp />} />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Container>

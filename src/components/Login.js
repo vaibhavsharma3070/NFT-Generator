@@ -26,11 +26,9 @@ const Login = () => {
         .then((res) => {
           // props.dispatch(setPartnerList(res.data));
           localStorage.setItem("token", res.data.data.token);
+          localStorage.setItem("role", res.data.data.roles);
           setFormData({ email: "", password: "" });
-          //setLoader(false);
-          alert("Login Successful.");
-          navigate("/Home");
-          if (res.data.data.roles === null) {
+          if (res.data.data.roles !== "Admin") {
             navigate("/Home");
           }
           else {
