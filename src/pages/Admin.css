@@ -1,0 +1,29 @@
+.nft-machine-box {
+    box-shadow: 0 0 2px 1px #00000014;
+    padding: 15px;
+    border-radius: 0.6rem;
+    min-height: 266px;
+    margin-bottom: 30px;
+}
+.upload-image{
+    position: relative;
+}
+button.upload-image input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+    opacity: 0;
+}
+
+.nft-machine-box button{
+    background-color: #ef88b3;
+    border: none;
+}
+.nft-machine-box button:hover, .nft-machine-box button:focus{
+    background-color: #ef88b3;
+    border: none;
+}
