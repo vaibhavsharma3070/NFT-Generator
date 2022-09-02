@@ -6,10 +6,14 @@ import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { Link } from "react-router-dom";
+import Toast from 'react-bootstrap/Toast';
 
 const Login = () => {
   let navigate = useNavigate();
   const isAdmin = true;
+  const [toast, setToast] = useState({ show: '', message: '' });
+
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [formError, setFormError] = useState({});
   const submitHandler = () => {
@@ -34,9 +38,12 @@ const Login = () => {
           else {
             navigate("/Admin");
           }
+          setToast({ message: res.data.message, show: true });
         })
         .catch((err) => {
           console.log("Error caught!", err);
+          setToast({ message: 'Something went wrong', show: true });
+
         });
     }
   };
@@ -44,8 +51,12 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setFormError({ ...formError, [e.target.name]: "" });
   };
+
   return (
     <>
+      {/* <Toast onClose={() => setToast({ ...toast, show: false })} show={toast.show} delay={3000} autohide>
+        <Toast.Body>Woohoo, you're reading this text in a Toast!</Toast.Body>
+      </Toast> */}
       <Container className="mb-4">
         <Row style={{ display: "flex", justifyContent: "center" }}>
           <Col xs={5}>
@@ -80,6 +91,20 @@ const Login = () => {
               <Button variant="primary" type="button" onClick={submitHandler}>
                 Login
               </Button>
+              <br />
+              <Container
+                className=""
+                style={{ display: "flex", justifyContent: "center" }}
+              >
+                <Form.Text className="text-muted">
+                  {"New to MyNFT? "}
+                </Form.Text>
+                <Form.Text className="text-muted">
+                  <Link to="/" className="">
+                    {" Register"}
+                  </Link>
+                </Form.Text>
+              </Container>
             </Form>
           </Col>
         </Row>

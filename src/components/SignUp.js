@@ -30,7 +30,6 @@ const SignUp = () => {
     if (isValidData) {
       SignUpApi(formData)
         .then((res) => {
-          // props.dispatch(setPartnerList(res.data));
           setFormData({ email: "", password: "", firstname: "", lastname: "" });
           alert("Signup Successful.");
           navigate("/Login");
@@ -45,27 +44,6 @@ const SignUp = () => {
     setFormError({ ...formError, [e.target.name]: "" });
   };
   return (
-    // <div class="container">
-
-    //     <label for="firstname"><b>firstname</b></label><br />
-    //     <input type="text" placeholder="Enter firstname" name="firstname" value={formData.firstname} onChange={onClickHandler} />
-    //     <p style={{ color: "red" }}>{formError?.firstname}</p>
-
-    //     <label for="lastname"><b>lastname</b></label><br />
-    //     <input type="text" placeholder="Enter lastname" name="lastname" value={formData.lastname} onChange={onClickHandler} />
-    //     <p style={{ color: "red" }}>{formError?.lastname}</p>
-
-    //     <label for="email"><b>Email</b></label><br />
-    //     <input type="text" placeholder="Enter email" name="email" value={formData.email} onChange={onClickHandler} />
-    //     <p style={{ color: "red" }}>{formError?.email}</p>
-
-    //     <label for="password"><b>Password</b></label><br />
-    //     <input type="password" placeholder="Enter Password" name="password" value={formData.password} onChange={onClickHandler} />
-    //     <p style={{ color: "red" }}>{formError?.password}</p>
-
-    //     <button type="submit" onClick={submitHandler}>Signin</button>
-
-    // </div>
     <>
       <Container className="mb-4">
         <Row style={{ display: "flex", justifyContent: "center" }}>

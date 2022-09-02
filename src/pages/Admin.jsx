@@ -130,7 +130,7 @@ const Admin = () => {
         <div className="row">
           <div className="col-lg-4">
             <div className="nft-machine-box">
-              <Form.Label>Directory Name:</Form.Label>
+              <Form.Label>Layer type name</Form.Label>
               <Form.Control
                 type="text"
                 name="directoryName"
@@ -154,7 +154,7 @@ const Admin = () => {
                 <h4>Files</h4>
                 <ul>{files}</ul>
               </aside>
-              
+
               <Button className="upload-image my-2" onClick={uploadImage}>
                 Upload
                 <input
@@ -169,7 +169,7 @@ const Admin = () => {
             <div className="nft-machine-box">
               {layerOrder.map((data) => (
                 <>
-                {/* <Form.Label for={data.name}> {data.name}</Form.Label> */}
+                  {/* <Form.Label for={data.name}> {data.name}</Form.Label> */}
                   <Form.Check
                     label={data.name}
                     type="checkbox"
@@ -185,23 +185,23 @@ const Admin = () => {
           </div>
           <div className="col-lg-4">
             <div className="nft-machine-box">
-               
-                <Form.Label>Enter number of image length</Form.Label>
-              
-               
-                <Form.Control
-                  type="text"
-                  name="imageLimit"
-                  placeholder="5"
-                  onChange={(e) => handleChange(e)}
-                />
-               
+
+              <Form.Label>Enter number of image length</Form.Label>
+
+
+              <Form.Control
+                type="text"
+                name="imageLimit"
+                placeholder="5"
+                onChange={(e) => handleChange(e)}
+              />
+
               <Button className="my-2" onClick={() => SubmitImageNumber()}>submit</Button>
             </div>
           </div>
         </div>
       </div>
-       
+
     </>
   );
 };
