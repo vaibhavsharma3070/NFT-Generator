@@ -11,6 +11,8 @@ import {
   UploadImages,
 } from "../Api/api";
 import MenuLayout from "../components/MenuLayout";
+import Toast from 'react-bootstrap/Toast';
+import ToastContainer from 'react-bootstrap/ToastContainer';
 
 const Admin = () => {
   const token = localStorage.getItem("token");
@@ -18,6 +20,7 @@ const Admin = () => {
   const [formError, setFormError] = useState({});
   const [formImageError, setFormImageError] = useState();
   const [fileData, setFileData] = useState([]);
+  const [toast, setToast] = useState({ show: '', message: '', event: '' });
   const [layerConfiguration, setLayerConfiguration] = useState({
     layersOrder: [],
     imageLimit: "",
@@ -28,34 +31,18 @@ const Admin = () => {
     getLayersOrder(token)
       .then((res) => {
         setLayerOrder(res.data.data)
+        setLayerConfiguration({ ...layerConfiguration, layersOrder: res.data.data })
       })
       .catch((error) => {
         console.log("error --> ", error);
       });
   }, [])
 
-  const selectedLayersOrder = (e) => {
-    if (e.target.checked) {
-      setLayerConfiguration({
-        ...layerConfiguration,
-        layersOrder: [
-          ...layerConfiguration.layersOrder,
-          parseInt(e.target.value),
-        ],
-      });
-    } else {
-      const temp = { ...layerConfiguration };
-      const index = layerConfiguration.layersOrder.findIndex(
-        (data) => data.name === e.target.name
-      );
-      temp.layersOrder.splice(index, 1);
-      setLayerConfiguration({
-        ...layerConfiguration,
-        layersOrder: [...temp.layersOrder],
-      });
-    }
+  const selectedLayersOrder = (e, index) => {
+    const temp = layerOrder;
+    temp[index].layertype_selected = e.target.checked
+    setLayerOrder(temp);
   };
-
   const onImageChange = (e) => {
     setFileData(e.target.files)
   }
@@ -80,9 +67,11 @@ const Admin = () => {
       saveDirectoryName(token, data)
         .then((res) => {
           console.log("directoryname", res);
+          setToast({ message: res.data.message, show: true, event: "success", position: "top-center" });
         })
         .catch((error) => {
           console.log("error --> ", error);
+          setToast({ message: error.message, show: true, event: "danger", position: "top-end" });
         });
     }
   };
@@ -104,18 +93,27 @@ const Admin = () => {
       UploadImages(token, data)
         .then((res) => {
           console.log("Uploaded", res);
+          setToast({
+            message: res.data.message, show: true, event: "success", position: "top-center"
+          });
         })
         .catch((error) => {
           console.log("error --> ", error);
+          setToast({ message: error.message, show: true, event: "danger", position: "top-end" });
         });
     }
   };
-
+  console.log("layerOrder", layerOrder)
+  function checkFalseValue(el, index, arrData) {
+    return el.layertype_selected === false
+  }
   const saveLayerOrder = () => {
-    const data = { status: true, id: layerConfiguration.layersOrder };
+    const data = layerOrder;
     let error = {};
     let isValidData = true;
-    if (layerConfiguration.imageLimit.length === 0) {
+    let check = data.every(checkFalseValue)
+    console.log("check", check)
+    if (check) {
       error = { layersOrder: `Please select layer order` };
       isValidData = false;
     }
@@ -125,9 +123,11 @@ const Admin = () => {
       saveLayersOrder(token, data)
         .then((res) => {
           console.log("layerOrder", res);
+          setToast({ message: res.data.message, show: true, event: "success", position: "top-center" });
         })
         .catch((error) => {
           console.log("error --> ", error);
+          setToast({ message: error.message, show: true, event: "danger", position: "top-end" });
         });
     }
   };
@@ -146,9 +146,11 @@ const Admin = () => {
       saveImageLimit(token, data)
         .then((res) => {
           console.log("imagenumber", res);
+          setToast({ message: res.data.message, show: true, event: "success", position: "top-center" });
         })
         .catch((error) => {
-          console.log("error --> ", error);
+          console.log("error --> ", error.message);
+          setToast({ message: error.message, show: true, event: "danger", position: "top-end" });
         });
     }
   };
@@ -156,6 +158,13 @@ const Admin = () => {
   return (
     <>
       <MenuLayout />
+      <ToastContainer className="p-3" position={toast?.position}>
+        <Toast onClose={() => setToast({ ...toast, show: false })} show={toast?.show} bg={toast?.event} autohide>
+          <Toast.Body className='text-white'>
+            {toast.message}
+          </Toast.Body>
+        </Toast>
+      </ToastContainer>
       <div className="container">
         <div className="row">
           <div className="col-lg-4">
@@ -188,16 +197,18 @@ const Admin = () => {
           </div>
           <div className="col-lg-4">
             <div className="nft-machine-box">
-              {layerOrder?.map((data) => (
+
+              {layerOrder?.map((data, index) => (
                 <>
                   {/* <Form.Label for={data.name}> {data.name}</Form.Label> */}
                   <Form.Check
                     label={data.layertype_name}
                     type="checkbox"
+                    defaultChecked={data.layertype_selected}
                     id={data.name}
                     name={data.layertype_name}
-                    value={data.layertype_id}
-                    onClick={(e) => selectedLayersOrder(e)}
+                    value={data.name}
+                    onClick={(e) => selectedLayersOrder(e, index)}
                   />
                 </>
               ))}
