@@ -15,13 +15,13 @@ import MenuLayout from "../components/MenuLayout";
 const Admin = () => {
   const token = localStorage.getItem("token");
   const [layerOrder, setLayerOrder] = React.useState()
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
-    accept: { "image/*": [] },
-  });
-  const [fileData, setFileData] = useState({});
+  const [formError, setFormError] = useState({});
+  const [formImageError, setFormImageError] = useState();
+  const [fileData, setFileData] = useState([]);
   const [layerConfiguration, setLayerConfiguration] = useState({
     layersOrder: [],
     imageLimit: "",
+    directoryName: ""
   });
 
   useEffect(() => {
@@ -33,18 +33,6 @@ const Admin = () => {
         console.log("error --> ", error);
       });
   }, [])
-
-  useEffect(() => {
-    setFileData(acceptedFiles);
-  }, [acceptedFiles]);
-
-  const files = acceptedFiles.map((file) => {
-    return (
-      <li key={file.path}>
-        {file.path} - {file.size} bytes
-      </li>
-    );
-  });
 
   const selectedLayersOrder = (e) => {
     if (e.target.checked) {
@@ -68,21 +56,9 @@ const Admin = () => {
     }
   };
 
-  const uploadImage = () => {
-    let formData = new FormData();
-    [...fileData].forEach((image) => {
-      formData.append("uploaded_file", image);
-    });
-    const data = fileData;
-
-    UploadImages(token, data)
-      .then((res) => {
-        console.log("Uploaded", res);
-      })
-      .catch((error) => {
-        console.log("error --> ", error);
-      });
-  };
+  const onImageChange = (e) => {
+    setFileData(e.target.files)
+  }
 
   const handleChange = (e) => {
     setLayerConfiguration({
@@ -93,35 +69,88 @@ const Admin = () => {
 
   const createDirectory = () => {
     const data = { name: layerConfiguration.directoryName };
-    saveDirectoryName(token, data)
-      .then((res) => {
-        console.log("directoryname", res);
-      })
-      .catch((error) => {
-        console.log("error --> ", error);
+    let error = {};
+    let isValidData = true;
+    if (layerConfiguration.directoryName === "") {
+      error = { directoryName: `Please enter Layer Type Name` };
+      isValidData = false;
+    }
+    setFormError({ ...error });
+    if (isValidData) {
+      saveDirectoryName(token, data)
+        .then((res) => {
+          console.log("directoryname", res);
+        })
+        .catch((error) => {
+          console.log("error --> ", error);
+        });
+    }
+  };
+  const uploadImage = () => {
+    let error = {};
+    let isValidData = true;
+    if (fileData.length === 0) {
+      error = { fileData: `Please select atleast 1 image` };
+      isValidData = false;
+    }
+    setFormImageError({ ...formImageError, ...error });
+    if (isValidData) {
+      setFormImageError({})
+      let formData = new FormData();
+      [...fileData].forEach((image) => {
+        formData.append("uploaded_file", image);
       });
+      const data = formData;
+      UploadImages(token, data)
+        .then((res) => {
+          console.log("Uploaded", res);
+        })
+        .catch((error) => {
+          console.log("error --> ", error);
+        });
+    }
   };
 
   const saveLayerOrder = () => {
     const data = { status: true, id: layerConfiguration.layersOrder };
-    saveLayersOrder(token, data)
-      .then((res) => {
-        console.log("layerOrder", res);
-      })
-      .catch((error) => {
-        console.log("error --> ", error);
-      });
+    let error = {};
+    let isValidData = true;
+    if (layerConfiguration.imageLimit.length === 0) {
+      error = { layersOrder: `Please select layer order` };
+      isValidData = false;
+    }
+    setFormImageError({})
+    setFormError(error);
+    if (isValidData) {
+      saveLayersOrder(token, data)
+        .then((res) => {
+          console.log("layerOrder", res);
+        })
+        .catch((error) => {
+          console.log("error --> ", error);
+        });
+    }
   };
 
   const SubmitImageNumber = () => {
     const data = { number: parseInt(layerConfiguration.imageLimit) };
-    saveImageLimit(token, data)
-      .then((res) => {
-        console.log("imagenumber", res);
-      })
-      .catch((error) => {
-        console.log("error --> ", error);
-      });
+    let error = {};
+    let isValidData = true;
+    if (layerConfiguration.imageLimit.length === 0) {
+      error = { imageLimit: `Image length is required` };
+      isValidData = false;
+    }
+    setFormImageError({})
+    setFormError(error);
+    if (isValidData) {
+      saveImageLimit(token, data)
+        .then((res) => {
+          console.log("imagenumber", res);
+        })
+        .catch((error) => {
+          console.log("error --> ", error);
+        });
+    }
   };
 
   return (
@@ -131,39 +160,30 @@ const Admin = () => {
         <div className="row">
           <div className="col-lg-4">
             <div className="nft-machine-box">
-              <Form.Label>Layer type name</Form.Label>
-              <Form.Control
-                type="text"
-                name="directoryName"
-                onChange={(e) => handleChange(e)}
-                placeholder=" Name..."
-              />
-              <Button className="nft-btn my-2" onClick={() => createDirectory()}>
-                create
-              </Button>
-            </div>
-          </div>
-          <div className="col-lg-4">
-            <div className="nft-machine-box">
-              <div
-                {...getRootProps({ className: "dropzone" })}
-                style={{ cursor: "pointer" }}
-              > <input
-                  type="file"
-
-                  style={{ display: "none" }}
+              <div>
+                <Form.Label>Layer type name</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="directoryName"
+                  onChange={(e) => handleChange(e)}
+                  placeholder=" Name..."
                 />
-                <p>  Drag 'n' drop some files here, or click to select files</p>
+                {formError?.directoryName && (
+                  <p className="text-danger">{formError?.directoryName}</p>
+                )}
               </div>
-              <aside>
-                <h4>Files</h4>
-                <ul>{files}</ul>
-              </aside>
-
-              <Button className="upload-image my-2" onClick={uploadImage}>
-                Upload
-
-              </Button>
+              <div style={{ marginTop: "25px" }}>
+                <Form.Group controlId="formFileMultiple" className="mb-3">
+                  <Form.Label>Upload images</Form.Label>
+                  <Form.Control type="file" multiple onChange={(e) => onImageChange(e)} />
+                </Form.Group>
+                {formImageError && (
+                  <p className="text-danger">{formImageError?.fileData}</p>
+                )}
+                <Button className="upload-image my-2" onClick={() => { uploadImage(); createDirectory(); }}>
+                  Create & Upload
+                </Button>
+              </div>
             </div>
           </div>
           <div className="col-lg-4">
@@ -181,6 +201,9 @@ const Admin = () => {
                   />
                 </>
               ))}
+              {formError?.layersOrder && (
+                <p className="text-danger">{formError?.layersOrder}</p>
+              )}
               <Button className="my-2" onClick={() => saveLayerOrder()}>submit</Button>
             </div>
           </div>
@@ -193,6 +216,9 @@ const Admin = () => {
                 placeholder="5"
                 onChange={(e) => handleChange(e)}
               />
+              {formError?.imageLimit && (
+                <p className="text-danger">{formError?.imageLimit}</p>
+              )}
               <Button className="my-2" onClick={() => SubmitImageNumber()}>submit</Button>
             </div>
           </div>
