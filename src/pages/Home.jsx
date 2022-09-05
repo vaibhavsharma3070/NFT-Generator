@@ -2,6 +2,7 @@ import React from "react";
 import Header from "../components/Header";
 import Meta from "../components/Meta";
 import { GenerateApi } from "../Api/api";
+import MenuLayout from "../components/MenuLayout";
 
 const Home = () => {
   const token = localStorage.getItem("token");
@@ -31,7 +32,8 @@ const Home = () => {
     document.body.removeChild(link)
   };
 
-  return (
+  return (<>
+    <MenuLayout />
     <div>
       <Meta title={pageTitle} />
       <Header head={pageTitle} />
@@ -52,6 +54,7 @@ const Home = () => {
         Try again if images are not downloaded automatically.
       </span>
     </div>
+  </>
   );
 };
 

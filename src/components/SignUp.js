@@ -7,6 +7,9 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Link } from "react-router-dom";
+import Toast from 'react-bootstrap/Toast';
+import ToastContainer from 'react-bootstrap/ToastContainer';
+import Menu from "./Menu";
 
 const SignUp = () => {
   let navigate = useNavigate();
@@ -16,11 +19,12 @@ const SignUp = () => {
     firstname: "",
     lastname: "",
   });
+  const [toast, setToast] = useState({ show: '', message: '', event: '' });
   const [formError, setFormError] = useState({});
   const submitHandler = () => {
-    const error = {};
-    const isValidData = true;
-    for (const property in formData) {
+    let error = {};
+    let isValidData = true;
+    for (let property in formData) {
       if (formData[property] === "") {
         error[property] = `${property} is required`;
         isValidData = false;
@@ -30,21 +34,32 @@ const SignUp = () => {
     if (isValidData) {
       SignUpApi(formData)
         .then((res) => {
+          setToast({ message: res.data.message, show: true, event: "success" });
           setFormData({ email: "", password: "", firstname: "", lastname: "" });
           alert("Signup Successful.");
           navigate("/Login");
         })
         .catch((err) => {
-          console.log("Error caught!", err);
+          let error = err?.response?.data?.errors?.Register?.message
+          setToast({ message: error, show: true, event: "danger" });
         });
     }
   };
+
   const onClickHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setFormError({ ...formError, [e.target.name]: "" });
   };
   return (
     <>
+      <Menu />
+      <ToastContainer className="p-3" position="top-center">
+        <Toast onClose={() => setToast({ ...toast, show: false })} show={toast?.show} bg={toast?.event} autohide>
+          <Toast.Body className='text-white'>
+            {toast.message}
+          </Toast.Body>
+        </Toast>
+      </ToastContainer>
       <Container className="mb-4">
         <Row style={{ display: "flex", justifyContent: "center" }}>
           <Col xs={5}>
@@ -58,11 +73,10 @@ const SignUp = () => {
                   value={formData.firstname}
                   onChange={onClickHandler}
                 />
+                {formError?.firstname && (
+                  <p className="text-danger">{formError?.firstname}</p>
+                )}
               </Form.Group>
-              <Form.Text className="text-muted" style={{ color: "red" }}>
-                {formError?.firstname}
-              </Form.Text>
-
               <Form.Group className="mb-3">
                 <Form.Label for="lastname">Lastname</Form.Label>
                 <Form.Control
@@ -72,10 +86,10 @@ const SignUp = () => {
                   value={formData.lastname}
                   onChange={onClickHandler}
                 />
+                {formError?.lastname && (
+                  <p className="text-danger">{formError?.lastname}</p>
+                )}
               </Form.Group>
-              <Form.Text className="text-muted" style={{ color: "red" }}>
-                {formError?.lastname}
-              </Form.Text>
               <Form.Group className="mb-3">
                 <Form.Label for="email">Email</Form.Label>
                 <Form.Control
@@ -85,11 +99,10 @@ const SignUp = () => {
                   value={formData.email}
                   onChange={onClickHandler}
                 />
+                {formError?.email && (
+                  <p className="text-danger">{formError?.email}</p>
+                )}
               </Form.Group>
-              <Form.Text className="text-muted" style={{ color: "red" }}>
-                {formError?.email}
-              </Form.Text>
-
               <Form.Group className="mb-3">
                 <Form.Label for="password">Password</Form.Label>
                 <Form.Control
@@ -99,27 +112,30 @@ const SignUp = () => {
                   value={formData.password}
                   onChange={onClickHandler}
                 />
+                {formError?.password && (
+                  <p className="text-danger">{formError?.password}</p>
+                )}
               </Form.Group>
-              <Form.Text className="text-muted" style={{ color: "red" }}>
-                {formError?.password}
-              </Form.Text>
-              <Button variant="primary" type="button" onClick={submitHandler}>
-                Register
-              </Button>
-              <br />
-              <Container
-                className=""
-                style={{ display: "flex", justifyContent: "center" }}
-              >
-                <Form.Text className="text-muted">
-                  Registered Already?
-                </Form.Text>
-                <Form.Text className="text-muted">
-                  <Link to="/Login" className="">
-                    Login{" "}
-                  </Link>
-                </Form.Text>
-              </Container>
+              <div style={{
+                display: "flex",
+                justifyContent: "space-between"
+              }}>
+                <Button variant="primary" type="button" onClick={submitHandler}>
+                  Register
+                </Button>
+                <div
+                  style={{ display: "flex", }}
+                >
+                  <Form.Text className="text-muted">
+                    Registered Already?
+                  </Form.Text>
+                  <Form.Text className="text-muted">
+                    <Link to="/Login" className="">
+                      Login{" "}
+                    </Link>
+                  </Form.Text>
+                </div>
+              </div>
             </Form>
           </Col>
         </Row>

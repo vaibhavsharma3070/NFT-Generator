@@ -10,6 +10,7 @@ import {
   saveLayersOrder,
   UploadImages,
 } from "../Api/api";
+import MenuLayout from "../components/MenuLayout";
 
 const Admin = () => {
   const token = localStorage.getItem("token");
@@ -125,6 +126,7 @@ const Admin = () => {
 
   return (
     <>
+      <MenuLayout />
       <div className="container">
         <div className="row">
           <div className="col-lg-4">

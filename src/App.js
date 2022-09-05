@@ -1,5 +1,5 @@
 import { Container } from "react-bootstrap";
-import { Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 // Layout
 import Layout from "./layout/Layout";
 // pages
@@ -14,7 +14,6 @@ import { ProtectedAdminRoute } from "./ProtectedRoute/ProtectedAdminRoute";
 import { ProtectedUserRoute } from "./ProtectedRoute/ProtectedUserRoute";
 
 const App = () => {
-
   return (
     <Layout>
       <Container>
@@ -34,7 +33,7 @@ const App = () => {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Container>
-    </Layout>
+    </  Layout>
   );
 };
 
