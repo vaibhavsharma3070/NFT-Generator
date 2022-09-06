@@ -3,6 +3,7 @@ import { Button, Form } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import "./Admin.css";
 import {
+  getImageLimit,
   getLayersOrder,
   ImageApi,
   saveDirectoryName,
@@ -28,10 +29,18 @@ const Admin = () => {
   });
 
   useEffect(() => {
-    getLayersOrder(token)
+    getLayersOrder()
       .then((res) => {
         setLayerOrder(res.data.data)
         setLayerConfiguration({ ...layerConfiguration, layersOrder: res.data.data })
+      })
+      .catch((error) => {
+        console.log("error --> ", error);
+      });
+    getImageLimit()
+      .then((res) => {
+        setLayerConfiguration({ ...layerConfiguration, imageLimit: res.data.data[0].Config_growEditionSizeTo })
+        console.log("getImageLimit --> ", res.data.data[0].Config_growEditionSizeTo);
       })
       .catch((error) => {
         console.log("error --> ", error);
@@ -64,7 +73,7 @@ const Admin = () => {
     }
     setFormError({ ...error });
     if (isValidData) {
-      saveDirectoryName(token, data)
+      saveDirectoryName(data)
         .then((res) => {
           console.log("directoryname", res);
           setToast({ message: res.data.message, show: true, event: "success", position: "top-center" });
@@ -90,7 +99,7 @@ const Admin = () => {
         formData.append("uploaded_file", image);
       });
       const data = formData;
-      UploadImages(token, data)
+      UploadImages(data)
         .then((res) => {
           console.log("Uploaded", res);
           setToast({
@@ -103,7 +112,6 @@ const Admin = () => {
         });
     }
   };
-  console.log("layerOrder", layerOrder)
   function checkFalseValue(el, index, arrData) {
     return el.layertype_selected === false
   }
@@ -112,7 +120,6 @@ const Admin = () => {
     let error = {};
     let isValidData = true;
     let check = data.every(checkFalseValue)
-    console.log("check", check)
     if (check) {
       error = { layersOrder: `Please select layer order` };
       isValidData = false;
@@ -120,7 +127,7 @@ const Admin = () => {
     setFormImageError({})
     setFormError(error);
     if (isValidData) {
-      saveLayersOrder(token, data)
+      saveLayersOrder(data)
         .then((res) => {
           console.log("layerOrder", res);
           setToast({ message: res.data.message, show: true, event: "success", position: "top-center" });
@@ -143,7 +150,7 @@ const Admin = () => {
     setFormImageError({})
     setFormError(error);
     if (isValidData) {
-      saveImageLimit(token, data)
+      saveImageLimit(data)
         .then((res) => {
           console.log("imagenumber", res);
           setToast({ message: res.data.message, show: true, event: "success", position: "top-center" });
@@ -175,7 +182,7 @@ const Admin = () => {
                   type="text"
                   name="directoryName"
                   onChange={(e) => handleChange(e)}
-                  placeholder=" Name..."
+                  placeholder=" Please enter name...."
                 />
                 {formError?.directoryName && (
                   <p className="text-danger">{formError?.directoryName}</p>
@@ -197,10 +204,8 @@ const Admin = () => {
           </div>
           <div className="col-lg-4">
             <div className="nft-machine-box">
-
               {layerOrder?.map((data, index) => (
                 <>
-                  {/* <Form.Label for={data.name}> {data.name}</Form.Label> */}
                   <Form.Check
                     label={data.layertype_name}
                     type="checkbox"
@@ -224,7 +229,8 @@ const Admin = () => {
               <Form.Control
                 type="text"
                 name="imageLimit"
-                placeholder="5"
+                placeholder="Please enter image length...."
+                value={layerConfiguration?.imageLimit}
                 onChange={(e) => handleChange(e)}
               />
               {formError?.imageLimit && (
@@ -235,7 +241,6 @@ const Admin = () => {
           </div>
         </div>
       </div>
-
     </>
   );
 };

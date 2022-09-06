@@ -9,7 +9,7 @@ const Home = () => {
   const pageTitle = "Home";
 
   const getImages = () => {
-    GenerateApi(token).then((res) => {
+    GenerateApi().then((res) => {
       res.data.data.map((url) => download(url));
     });
   };

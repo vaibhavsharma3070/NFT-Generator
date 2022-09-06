@@ -18,22 +18,16 @@ export const LoginApi = (data) => {
     console.log("LoginApi--error-->", error)
   }
 }
-export const GenerateApi = (token) => {
+export const GenerateApi = () => {
   try {
-    return axios.get(`${process.env.REACT_APP_BASE_URL}/user/generate`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "content-type": "application/json",
-        accept: "application/json",
-      },
-    });
+    return axios.get(`${process.env.REACT_APP_BASE_URL}/user/generate`);
   }
   catch (error) {
     console.log("GenerateApi--error-->", error)
   }
 }
 
-export const UploadImages = (token, data) => {
+export const UploadImages = (data) => {
   try {
     return axios.post(`${process.env.REACT_APP_BASE_URL}/admin/storeImage`, data);
   }
@@ -43,7 +37,7 @@ export const UploadImages = (token, data) => {
 }
 
 
-export const saveDirectoryName = (token, data) => {
+export const saveDirectoryName = (data) => {
   try {
     return axios.post(`${process.env.REACT_APP_BASE_URL}/admin/savelayer`, data);
   }
@@ -53,7 +47,7 @@ export const saveDirectoryName = (token, data) => {
 }
 
 
-export const getLayersOrder = (token, data) => {
+export const getLayersOrder = (data) => {
   try {
     return axios.get(`${process.env.REACT_APP_BASE_URL}/admin/layertypelist`, data);
   }
@@ -62,7 +56,7 @@ export const getLayersOrder = (token, data) => {
   }
 }
 
-export const saveLayersOrder = (token, data) => {
+export const saveLayersOrder = (data) => {
   try {
     return axios.put(`${process.env.REACT_APP_BASE_URL}/admin/updatelayer`, data);
   }
@@ -70,12 +64,20 @@ export const saveLayersOrder = (token, data) => {
     console.log("saveLayersOrder--error-->", error)
   }
 }
-export const saveImageLimit = (token, data) => {
+export const saveImageLimit = (data) => {
   try {
     return axios.put(`${process.env.REACT_APP_BASE_URL}/config/updateconfig`, data);
   }
   catch (error) {
     console.log("saveImageLimit--error-->", error)
+  }
+}
+export const getImageLimit = (data) => {
+  try {
+    return axios.get(`${process.env.REACT_APP_BASE_URL}/config/getConfig`, data);
+  }
+  catch (error) {
+    console.log("getImageLimit--error-->")
   }
 }
 
