@@ -21,7 +21,7 @@ const App = () => {
         <Routes>
           <Route element={<PrivateRoute />}>
             <Route element={<ProtectedUserRoute />}>
-              <Route path="/Home" element={<Home />} />
+              <Route path="/user/home" element={<Home />} />
             </Route>
             <Route element={<ProtectedAdminRoute />}>
               <Route path="/admin/home" element={<Admin />} />

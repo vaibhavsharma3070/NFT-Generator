@@ -37,7 +37,7 @@ const Login = () => {
           localStorage.setItem("role", res.data.data.roles);
           setFormData({ email: "", password: "" });
           if (res.data.data.roles !== "Admin") {
-            navigate("/Home");
+            navigate("/user/home");
           }
           else {
             navigate("/admin/home");

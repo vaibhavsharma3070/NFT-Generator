@@ -3,5 +3,5 @@ import { Navigate, Outlet } from "react-router-dom"
 
 export const ProtectedUserRoute = () => {
     const role = localStorage.getItem('role');
-    return role !== "Admin" ? <Outlet /> : <Navigate to="/Admin" />
+    return role !== "Admin" ? <Outlet /> : <Navigate to="/admin/home" />
 }
