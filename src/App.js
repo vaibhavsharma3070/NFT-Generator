@@ -12,6 +12,7 @@ import { PublicRoute } from "./PublicRoute/PublicRoute";
 import { PrivateRoute } from "./PrivateRoute/PrivateRoute";
 import { ProtectedAdminRoute } from "./ProtectedRoute/ProtectedAdminRoute";
 import { ProtectedUserRoute } from "./ProtectedRoute/ProtectedUserRoute";
+import UserTable from "./pages/UserTable";
 
 const App = () => {
   return (
@@ -23,7 +24,8 @@ const App = () => {
               <Route path="/Home" element={<Home />} />
             </Route>
             <Route element={<ProtectedAdminRoute />}>
-              <Route path="/Admin" element={<Admin />} />
+              <Route path="/admin/home" element={<Admin />} />
+              <Route path="/admin/usersData" element={<UserTable />} />
             </Route>
           </Route>
           <Route element={<PublicRoute />}>

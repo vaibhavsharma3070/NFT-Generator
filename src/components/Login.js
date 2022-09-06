@@ -40,7 +40,7 @@ const Login = () => {
             navigate("/Home");
           }
           else {
-            navigate("/Admin");
+            navigate("/admin/home");
           }
         })
         .catch((err) => {

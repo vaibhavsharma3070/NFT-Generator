@@ -1,23 +1,22 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Button, Form } from "react-bootstrap";
-import { useDropzone } from "react-dropzone";
+import React, { useEffect, useState } from "react";
+import { Button, Form, Spinner } from "react-bootstrap";
 import "./Admin.css";
 import {
   getImageLimit,
   getLayersOrder,
-  ImageApi,
   saveDirectoryName,
   saveImageLimit,
   saveLayersOrder,
   UploadImages,
+  deleteLayer
 } from "../Api/api";
 import MenuLayout from "../components/MenuLayout";
 import Toast from 'react-bootstrap/Toast';
 import ToastContainer from 'react-bootstrap/ToastContainer';
-
+let count = 0
 const Admin = () => {
   const token = localStorage.getItem("token");
-  const [layerOrder, setLayerOrder] = React.useState()
+  const [layerOrder, setLayerOrder] = React.useState([])
   const [formError, setFormError] = useState({});
   const [formImageError, setFormImageError] = useState();
   const [fileData, setFileData] = useState([]);
@@ -52,6 +51,7 @@ const Admin = () => {
     temp[index].layertype_selected = e.target.checked
     setLayerOrder(temp);
   };
+
   const onImageChange = (e) => {
     setFileData(e.target.files)
   }
@@ -75,7 +75,8 @@ const Admin = () => {
     if (isValidData) {
       saveDirectoryName(data)
         .then((res) => {
-          console.log("directoryname", res);
+          console.log("directoryname", res.data.data);
+          setLayerOrder([...layerOrder, { layertype_id: res.data.data.id, layertype_name: res.data.data.name, layertype_selected: res.data.data.selected }])
           setToast({ message: res.data.message, show: true, event: "success", position: "top-center" });
         })
         .catch((error) => {
@@ -84,6 +85,7 @@ const Admin = () => {
         });
     }
   };
+
   const uploadImage = () => {
     let error = {};
     let isValidData = true;
@@ -112,16 +114,49 @@ const Admin = () => {
         });
     }
   };
+
+  const deleteLayerInfo = (data) => {
+    const deleteData = data.layertype_id
+    console.log("deleteLayer", deleteData)
+    deleteLayer(deleteData)
+      .then((res) => {
+        const temp = [...layerOrder]
+        const index = temp.findIndex((data) => data.layertype_id === deleteData)
+        temp.splice(index, 1)
+        console.log("temp", temp, index)
+        setLayerOrder(temp)
+        setToast({
+          message: res.data.message, show: true, event: "success", position: "top-center"
+        });
+      })
+      .catch((error) => {
+        console.log("error --> ", error);
+        setToast({ message: error.message, show: true, event: "danger", position: "top-end" });
+      });
+  };
+
   function checkFalseValue(el, index, arrData) {
     return el.layertype_selected === false
   }
+
   const saveLayerOrder = () => {
+    count = 0
     const data = layerOrder;
     let error = {};
     let isValidData = true;
     let check = data.every(checkFalseValue)
+    console.log("data", data)
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].layertype_selected === true) {
+        count++
+      }
+    }
     if (check) {
       error = { layersOrder: `Please select layer order` };
+      isValidData = false;
+    }
+    else if (count < 5) {
+      error = { layersOrder: `Please select atleast 5 layer order` };
       isValidData = false;
     }
     setFormImageError({})
@@ -164,7 +199,7 @@ const Admin = () => {
 
   return (
     <>
-      <MenuLayout />
+      <MenuLayout admin="admin" />
       <ToastContainer className="p-3" position={toast?.position}>
         <Toast onClose={() => setToast({ ...toast, show: false })} show={toast?.show} bg={toast?.event} autohide>
           <Toast.Body className='text-white'>
@@ -204,23 +239,34 @@ const Admin = () => {
           </div>
           <div className="col-lg-4">
             <div className="nft-machine-box">
-              {layerOrder?.map((data, index) => (
-                <>
-                  <Form.Check
-                    label={data.layertype_name}
-                    type="checkbox"
-                    defaultChecked={data.layertype_selected}
-                    id={data.name}
-                    name={data.layertype_name}
-                    value={data.name}
-                    onClick={(e) => selectedLayersOrder(e, index)}
-                  />
-                </>
-              ))}
-              {formError?.layersOrder && (
-                <p className="text-danger">{formError?.layersOrder}</p>
-              )}
-              <Button className="my-2" onClick={() => saveLayerOrder()}>submit</Button>
+              {layerOrder.length === 0 ?
+                (
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <Spinner animation="border" variant="primary" />
+                  </div>
+                )
+                : (
+                  <>   {layerOrder?.map((data, index) => (
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <Form.Check
+                        label={data.layertype_name}
+                        type="checkbox"
+                        defaultChecked={data.layertype_selected}
+                        id={data.name}
+                        name={data.layertype_name}
+                        value={data.name}
+                        onClick={(e) => selectedLayersOrder(e, index)}
+                      />
+                      <div style={{ cursor: "pointer", color: "red" }} onClick={() => deleteLayerInfo(data)}>
+                        Delete
+                      </div>
+                    </div>
+                  ))}
+                    {formError?.layersOrder && (
+                      <p className="text-danger">{formError?.layersOrder}</p>
+                    )}
+                    <Button className="my-2" onClick={saveLayerOrder}>Submit</Button></>)}
+
             </div>
           </div>
           <div className="col-lg-4">
@@ -236,7 +282,7 @@ const Admin = () => {
               {formError?.imageLimit && (
                 <p className="text-danger">{formError?.imageLimit}</p>
               )}
-              <Button className="my-2" onClick={() => SubmitImageNumber()}>submit</Button>
+              <Button className="my-2" onClick={() => SubmitImageNumber()}>Submit</Button>
             </div>
           </div>
         </div>

@@ -36,6 +36,23 @@ export const UploadImages = (data) => {
   }
 }
 
+export const deleteLayer = (data) => {
+  try {
+    return axios.delete(`${process.env.REACT_APP_BASE_URL}/admin/deletelayer/` + data);
+  }
+  catch (error) {
+    console.log("deleteLayer--error-->", error)
+  }
+}
+
+export const getUserList = (data) => {
+  try {
+    return axios.get(`${process.env.REACT_APP_BASE_URL}/admin/userlist`, data);
+  }
+  catch (error) {
+    console.log("getUserList--error-->", error)
+  }
+}
 
 export const saveDirectoryName = (data) => {
   try {
