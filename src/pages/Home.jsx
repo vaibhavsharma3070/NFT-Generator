@@ -5,7 +5,6 @@ import { GenerateApi } from "../Api/api";
 import MenuLayout from "../components/MenuLayout";
 
 const Home = () => {
-  const token = localStorage.getItem("token");
   const pageTitle = "Home";
 
   const getImages = () => {

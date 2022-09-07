@@ -8,6 +8,7 @@ import {
   saveImageLimit,
   saveLayersOrder,
   UploadImages,
+  GenerateApi,
   deleteLayer
 } from "../Api/api";
 import MenuLayout from "../components/MenuLayout";
@@ -71,8 +72,12 @@ const Admin = () => {
       error = { directoryName: `Please enter Layer Type Name` };
       isValidData = false;
     }
+    else {
+      error = { directoryName: `` };
+      isValidData = true;
+    }
     setFormError({ ...error });
-    if (isValidData) {
+    if (isValidData && fileData.length !== 0) {
       saveDirectoryName(data)
         .then((res) => {
           console.log("directoryname", res.data.data);
@@ -93,8 +98,12 @@ const Admin = () => {
       error = { fileData: `Please select atleast 1 image` };
       isValidData = false;
     }
+    else {
+      error = { fileData: `` };
+      isValidData = true;
+    }
     setFormImageError({ ...formImageError, ...error });
-    if (isValidData) {
+    if (isValidData && layerConfiguration.directoryName !== "") {
       setFormImageError({})
       let formData = new FormData();
       [...fileData].forEach((image) => {
@@ -159,6 +168,10 @@ const Admin = () => {
       error = { layersOrder: `Please select atleast 5 layer order` };
       isValidData = false;
     }
+    else {
+      error = { layersOrder: `` };
+      isValidData = true;
+    }
     setFormImageError({})
     setFormError(error);
     if (isValidData) {
@@ -174,6 +187,31 @@ const Admin = () => {
     }
   };
 
+  const getImages = () => {
+    GenerateApi().then((res) => {
+      res.data.data.map((url) => download(url));
+    });
+  };
+
+  const download = async (url) => {
+    const originalImage = url;
+    const image = await fetch(originalImage);
+
+    //Split image name
+    const nameSplit = originalImage.split("/");
+    const duplicateName = nameSplit.pop();
+
+    const imageBlog = await image.blob()
+    const imageURL = URL.createObjectURL(imageBlog)
+    const link = document.createElement('a')
+    link.href = imageURL;
+    link.download = "" + duplicateName + "";
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  };
+
+
   const SubmitImageNumber = () => {
     const data = { number: parseInt(layerConfiguration.imageLimit) };
     let error = {};
@@ -181,6 +219,10 @@ const Admin = () => {
     if (layerConfiguration.imageLimit.length === 0) {
       error = { imageLimit: `Image length is required` };
       isValidData = false;
+    }
+    else {
+      error = { imageLimit: `` };
+      isValidData = true;
     }
     setFormImageError({})
     setFormError(error);
@@ -266,7 +308,6 @@ const Admin = () => {
                       <p className="text-danger">{formError?.layersOrder}</p>
                     )}
                     <Button className="my-2" onClick={saveLayerOrder}>Submit</Button></>)}
-
             </div>
           </div>
           <div className="col-lg-4">
@@ -283,6 +324,22 @@ const Admin = () => {
                 <p className="text-danger">{formError?.imageLimit}</p>
               )}
               <Button className="my-2" onClick={() => SubmitImageNumber()}>Submit</Button>
+            </div>
+          </div>
+          <div className="col-lg-4">
+            <div className="nft-machine-box">
+              <div
+                style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "100px 0" }}
+              >
+                <button
+                  id="downloadImage"
+                  className="btn btn-primary"
+                  style={{ textAlign: "center" }}
+                  onClick={getImages}
+                >
+                  Generate and Download Images
+                </button>
+              </div>
             </div>
           </div>
         </div>
