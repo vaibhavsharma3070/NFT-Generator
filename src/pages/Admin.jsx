@@ -283,7 +283,7 @@ const Admin = () => {
             <div className="nft-machine-box">
               {layerOrder.length === 0 ?
                 (
-                  <div style={{ display: "flex", justifyContent: "center" }}>
+                  <div style={{ display: "flex", justifyContent: "center", padding: "100px 0" }}>
                     <Spinner animation="border" variant="primary" />
                   </div>
                 )
