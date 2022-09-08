@@ -29,8 +29,8 @@ const App = () => {
             </Route>
           </Route>
           <Route element={<PublicRoute />}>
-            <Route path="/Login" element={<Login />} />
-            <Route index path="/" element={<SignUp />} />
+            <Route index path="/" element={<Login />} />
+            {/* <Route index path="/" element={<SignUp />} /> */}
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

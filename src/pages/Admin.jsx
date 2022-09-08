@@ -14,7 +14,10 @@ import {
 import MenuLayout from "../components/MenuLayout";
 import Toast from 'react-bootstrap/Toast';
 import ToastContainer from 'react-bootstrap/ToastContainer';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+
 let count = 0
+
 const Admin = () => {
   const token = localStorage.getItem("token");
   const [layerOrder, setLayerOrder] = React.useState([])
@@ -27,10 +30,36 @@ const Admin = () => {
     imageLimit: "",
     directoryName: ""
   });
+  const [dataItems, setDataItems] = useState([])
 
   useEffect(() => {
     getLayersOrder()
       .then((res) => {
+        const temp1 = []
+        const temp2 = []
+        res.data.data.map((data) => {
+          if (data?.layertype_selected === false) {
+            temp1.push(data)
+          }
+          else if (data?.layertype_selected === true) {
+            temp2.push(data)
+          }
+        })
+        const tempData = {
+          layers: {
+            id: 'layers',
+            list: temp1
+          },
+          selected: {
+            id: 'selected',
+            list: temp2
+          }
+        }
+        setDataItems(tempData)
+        // res.data.data.map((item) => {
+        //     tempData[item.name] = res.data.data
+        // })
+
         setLayerOrder(res.data.data)
         setLayerConfiguration({ ...layerConfiguration, layersOrder: res.data.data })
       })
@@ -64,6 +93,77 @@ const Admin = () => {
     });
   };
 
+  const onDragEnd = ({ source, destination }) => {
+    // Make sure we have a valid destination
+    if (destination === undefined || destination === null) return null
+
+    // Make sure we're actually moving the item
+    if (
+      source.droppableId === destination.droppableId &&
+      destination.index === source.index
+    )
+      return null
+
+    // Set start and end variables
+    const start = dataItems[source.droppableId]
+    const end = dataItems[destination.droppableId]
+
+    // If start is the same as end, we're in the same column
+    if (start === end) {
+      // Move the item within the list
+      // Start by making a new list without the dragged item
+      const newList = start.list.filter(
+        (_, idx) => idx !== source.index
+      )
+
+      // Then insert the item at the right location
+      newList.splice(destination.index, 0, start.list[source.index])
+
+      // Then create a new copy of the column object
+      const newCol = {
+        id: start.id,
+        list: newList
+      }
+
+      // Update the state
+      setDataItems(state => ({ ...state, [newCol.id]: newCol }))
+      return null
+    } else {
+      // If start is different from end, we need to update multiple columns
+      // Filter the start list like before
+      const newStartList = start.list.filter(
+        (_, idx) => idx !== source.index
+      )
+
+      // Create a new start column
+      const newStartCol = {
+        id: start.id,
+        list: newStartList
+      }
+
+      // Make a new end list array
+      const newEndList = end.list
+
+      // Insert the item into the end list
+      newEndList.splice(destination.index, 0, start.list[source.index])
+
+      // Create a new end column
+      const newEndCol = {
+        id: end.id,
+        list: newEndList
+      }
+
+      // Update the state
+      setDataItems(state => ({
+        ...state,
+        [newStartCol.id]: newStartCol,
+        [newEndCol.id]: newEndCol
+      }))
+      return null
+    }
+  }
+
+  console.log("dataItems", dataItems)
   const createDirectory = () => {
     const data = { name: layerConfiguration.directoryName };
     let error = {};
@@ -127,13 +227,12 @@ const Admin = () => {
   const deleteLayerInfo = (data) => {
     const deleteData = data.layertype_id
     console.log("deleteLayer", deleteData)
+    const temp = [...layerOrder]
+    const index = temp.findIndex((data) => data.layertype_id === deleteData)
+    temp.splice(index, 1)
+    setLayerOrder(temp)
     deleteLayer(deleteData)
       .then((res) => {
-        const temp = [...layerOrder]
-        const index = temp.findIndex((data) => data.layertype_id === deleteData)
-        temp.splice(index, 1)
-        console.log("temp", temp, index)
-        setLayerOrder(temp)
         setToast({
           message: res.data.message, show: true, event: "success", position: "top-center"
         });
@@ -147,10 +246,23 @@ const Admin = () => {
   function checkFalseValue(el, index, arrData) {
     return el.layertype_selected === false
   }
-
+  console.log("dataItems", dataItems)
   const saveLayerOrder = () => {
+    const data1 = dataItems?.layers?.list;
+    const data2 = dataItems?.selected?.list;
+
+    let temp1 = []
+    for (let index = 0; index < data1.length; index++) {
+      data1[index].layertype_selected = false
+    }
+    for (let index = 0; index < data2.length; index++) {
+      data2[index].layertype_selected = true
+
+    }
+    temp1 = [...data2, ...data1]
+    console.log("temp1==", temp1, data1, data2)
+    const data = temp1
     count = 0
-    const data = layerOrder;
     let error = {};
     let isValidData = true;
     let check = data.every(checkFalseValue)
@@ -175,6 +287,7 @@ const Admin = () => {
     setFormImageError({})
     setFormError(error);
     if (isValidData) {
+      console.log("isValidData", data)
       saveLayersOrder(data)
         .then((res) => {
           console.log("layerOrder", res);
@@ -238,7 +351,24 @@ const Admin = () => {
         });
     }
   };
-
+  const salaryBased = [
+    {
+      value: 'perHour',
+      label: 'per Hour',
+    },
+    {
+      value: 'perWeek',
+      label: 'per Week',
+    },
+    {
+      value: 'perMonth',
+      label: 'per Month',
+    },
+    {
+      value: 'perAnnum',
+      label: 'per Anum',
+    },
+  ];
   return (
     <>
       <MenuLayout admin="admin" />
@@ -290,7 +420,10 @@ const Admin = () => {
                 : (
                   <>   {layerOrder?.map((data, index) => (
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <Form.Check
+                      <div>
+                        {data.layertype_name}
+                      </div>
+                      {/* <Form.Check
                         label={data.layertype_name}
                         type="checkbox"
                         defaultChecked={data.layertype_selected}
@@ -298,16 +431,13 @@ const Admin = () => {
                         name={data.layertype_name}
                         value={data.name}
                         onClick={(e) => selectedLayersOrder(e, index)}
-                      />
+                      /> */}
                       <div style={{ cursor: "pointer", color: "red" }} onClick={() => deleteLayerInfo(data)}>
                         Delete
                       </div>
                     </div>
                   ))}
-                    {formError?.layersOrder && (
-                      <p className="text-danger">{formError?.layersOrder}</p>
-                    )}
-                    <Button className="my-2" onClick={saveLayerOrder}>Submit</Button></>)}
+                  </>)}
             </div>
           </div>
           <div className="col-lg-4">
@@ -340,6 +470,50 @@ const Admin = () => {
                   Generate and Download Images
                 </button>
               </div>
+            </div>
+          </div>
+          {console.log("dataItems", dataItems)}
+          <div className="col-lg-8">
+            <div className="nft-machine-box">
+              {dataItems.length === 0 ? (<div style={{ display: "flex", justifyContent: "center", padding: "100px 0" }}>
+                <Spinner animation="border" variant="primary" />
+              </div>) : (
+                <><DragDropContext onDragEnd={onDragEnd}>
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    {Object.values(dataItems)?.map((data, index) => (
+                      <Droppable droppableId={data?.id}>
+                        {(provided) => (
+                          <div className="col-lg-5" style={{ marginRight: "25px", }} >
+                            <h2>{data?.id}</h2>
+                            <div style={{ backgroundColor: "#ef88b3", minHeight: "180px", borderRadius: "12px" }} {...provided.droppableProps} ref={provided.innerRef}>
+                              {data.list.map((text, index) => (
+                                <Draggable draggableId={text?.layertype_name} index={index} key={text?.layertype_name} >
+                                  {provided => (
+                                    <div
+                                      ref={provided.innerRef}
+                                      {...provided.draggableProps}
+                                      {...provided.dragHandleProps}
+                                    >
+                                      <div style={{ border: "3px solid black", marginTop: "10px" }}>
+                                        {text?.layertype_name}
+                                      </div>
+                                    </div>
+                                  )}
+                                </Draggable>
+                              ))}
+                              {provided.placeholder}
+                            </div>
+                          </div>
+                        )}
+                      </Droppable>
+                    ))}
+                  </div>
+                </DragDropContext>
+                  {formError?.layersOrder && (
+                    <p className="text-danger">{formError?.layersOrder}</p>
+                  )}
+                  <Button className="my-2" onClick={saveLayerOrder}>Submit</Button></>)}
+
             </div>
           </div>
         </div>
