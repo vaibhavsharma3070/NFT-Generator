@@ -97,6 +97,14 @@ export const getImageLimit = (data) => {
     console.log("getImageLimit--error-->")
   }
 }
+export const userStatus = (data, id) => {
+  try {
+    return axios.put(`${process.env.REACT_APP_BASE_URL}/admin/delete/${id}`, data);
+  }
+  catch (error) {
+    console.log("getImageLimit--error-->")
+  }
+}
 
 /* return axios({ method: 'put', url:  `${process.env.REACT_APP_BASE_URL}/config/updateconfig` + `${process.env.REACT_APP_BASE_URL}/config/updateconfig`, headers: { 'Authorization': 'Bearer ' + accessToken, "content-type": "application/json",
           accept: "application/json", } },data) */

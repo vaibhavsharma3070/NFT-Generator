@@ -76,11 +76,11 @@ const Admin = () => {
       });
   }, [])
 
-  const selectedLayersOrder = (e, index) => {
-    const temp = layerOrder;
-    temp[index].layertype_selected = e.target.checked
-    setLayerOrder(temp);
-  };
+  // const selectedLayersOrder = (e, index) => {
+  //   const temp = layerOrder;
+  //   temp[index].layertype_selected = e.target.checked
+  //   setLayerOrder(temp);
+  // };
 
   const onImageChange = (e) => {
     setFileData(e.target.files)
@@ -163,7 +163,6 @@ const Admin = () => {
     }
   }
 
-  console.log("dataItems", dataItems)
   const createDirectory = () => {
     const data = { name: layerConfiguration.directoryName };
     let error = {};
@@ -351,24 +350,7 @@ const Admin = () => {
         });
     }
   };
-  const salaryBased = [
-    {
-      value: 'perHour',
-      label: 'per Hour',
-    },
-    {
-      value: 'perWeek',
-      label: 'per Week',
-    },
-    {
-      value: 'perMonth',
-      label: 'per Month',
-    },
-    {
-      value: 'perAnnum',
-      label: 'per Anum',
-    },
-  ];
+
   return (
     <>
       <MenuLayout admin="admin" />
@@ -485,7 +467,7 @@ const Admin = () => {
                         {(provided) => (
                           <div className="col-lg-5" style={{ marginRight: "25px", }} >
                             <h2>{data?.id}</h2>
-                            <div style={{ backgroundColor: "#ef88b3", minHeight: "180px", borderRadius: "12px" }} {...provided.droppableProps} ref={provided.innerRef}>
+                            <div style={{ backgroundColor: "#ef88b3", minHeight: "180px", borderRadius: "8px", padding: "20px" }} {...provided.droppableProps} ref={provided.innerRef}>
                               {data.list.map((text, index) => (
                                 <Draggable draggableId={text?.layertype_name} index={index} key={text?.layertype_name} >
                                   {provided => (
@@ -494,7 +476,7 @@ const Admin = () => {
                                       {...provided.draggableProps}
                                       {...provided.dragHandleProps}
                                     >
-                                      <div style={{ border: "3px solid black", marginTop: "10px" }}>
+                                      <div style={{ border: "2px solid black", marginTop: "10px", fontSize: "16px" }}>
                                         {text?.layertype_name}
                                       </div>
                                     </div>
@@ -513,7 +495,6 @@ const Admin = () => {
                     <p className="text-danger">{formError?.layersOrder}</p>
                   )}
                   <Button className="my-2" onClick={saveLayerOrder}>Submit</Button></>)}
-
             </div>
           </div>
         </div>
