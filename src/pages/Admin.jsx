@@ -24,6 +24,7 @@ const Admin = () => {
   const [formError, setFormError] = useState({});
   const [formImageError, setFormImageError] = useState();
   const [fileData, setFileData] = useState([]);
+  const [generateLoader, setGenerateLoader] = useState(false);
   const [toast, setToast] = useState({ show: '', message: '', event: '' });
   const [layerConfiguration, setLayerConfiguration] = useState({
     layersOrder: [],
@@ -68,8 +69,7 @@ const Admin = () => {
       });
     getImageLimit()
       .then((res) => {
-        setLayerConfiguration({ ...layerConfiguration, imageLimit: res.data.data[0].Config_growEditionSizeTo })
-        console.log("getImageLimit --> ", res.data.data[0].Config_growEditionSizeTo);
+        setLayerConfiguration({ ...layerConfiguration, imageLimit: res.data.data[0].config_growEditionSizeTo })
       })
       .catch((error) => {
         console.log("error --> ", error);
@@ -179,7 +179,6 @@ const Admin = () => {
     if (isValidData && fileData.length !== 0) {
       saveDirectoryName(data)
         .then((res) => {
-          console.log("directoryname", res.data.data);
           setLayerOrder([...layerOrder, { layertype_id: res.data.data.id, layertype_name: res.data.data.name, layertype_selected: res.data.data.selected }])
           setToast({ message: res.data.message, show: true, event: "success", position: "top-center" });
         })
@@ -225,7 +224,6 @@ const Admin = () => {
 
   const deleteLayerInfo = (data) => {
     const deleteData = data.layertype_id
-    console.log("deleteLayer", deleteData)
     const temp = [...layerOrder]
     const index = temp.findIndex((data) => data.layertype_id === deleteData)
     temp.splice(index, 1)
@@ -245,7 +243,6 @@ const Admin = () => {
   function checkFalseValue(el, index, arrData) {
     return el.layertype_selected === false
   }
-  console.log("dataItems", dataItems)
   const saveLayerOrder = () => {
     const data1 = dataItems?.layers?.list;
     const data2 = dataItems?.selected?.list;
@@ -259,13 +256,11 @@ const Admin = () => {
 
     }
     temp1 = [...data2, ...data1]
-    console.log("temp1==", temp1, data1, data2)
     const data = temp1
     count = 0
     let error = {};
     let isValidData = true;
     let check = data.every(checkFalseValue)
-    console.log("data", data)
     for (let i = 0; i < data.length; i++) {
       if (data[i].layertype_selected === true) {
         count++
@@ -286,10 +281,8 @@ const Admin = () => {
     setFormImageError({})
     setFormError(error);
     if (isValidData) {
-      console.log("isValidData", data)
       saveLayersOrder(data)
         .then((res) => {
-          console.log("layerOrder", res);
           setToast({ message: res.data.message, show: true, event: "success", position: "top-center" });
         })
         .catch((error) => {
@@ -300,9 +293,16 @@ const Admin = () => {
   };
 
   const getImages = () => {
+    setGenerateLoader(true)
     GenerateApi().then((res) => {
+      setToast({ message: res.data.message, show: true, event: "success", position: "top-center" });
       res.data.data.map((url) => download(url));
-    });
+      setGenerateLoader(false)
+    })
+      .catch((error) => {
+        console.log("error --> ", error);
+        setToast({ message: error.message, show: true, event: "danger", position: "top-end" });
+      });
   };
 
   const download = async (url) => {
@@ -341,7 +341,6 @@ const Admin = () => {
     if (isValidData) {
       saveImageLimit(data)
         .then((res) => {
-          console.log("imagenumber", res);
           setToast({ message: res.data.message, show: true, event: "success", position: "top-center" });
         })
         .catch((error) => {
@@ -443,18 +442,20 @@ const Admin = () => {
               <div
                 style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "100px 0" }}
               >
-                <button
+                {generateLoader ? (<>
+                  <Spinner animation="border" variant="primary" />
+                </>) : (<>  <button
                   id="downloadImage"
                   className="btn btn-primary"
                   style={{ textAlign: "center" }}
                   onClick={getImages}
                 >
                   Generate and Download Images
-                </button>
+                </button></>)}
+
               </div>
             </div>
           </div>
-          {console.log("dataItems", dataItems)}
           <div className="col-lg-8">
             <div className="nft-machine-box">
               {dataItems.length === 0 ? (<div style={{ display: "flex", justifyContent: "center", padding: "100px 0" }}>
