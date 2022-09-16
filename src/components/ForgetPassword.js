@@ -39,6 +39,7 @@ const ForgetPassword = () => {
                 },1000)
             }
         })
+        
         .catch((err) => {
             let error = err?.response?.data?.message
           setToast({ message: error, show: true, event: "danger" });

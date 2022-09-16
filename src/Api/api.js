@@ -26,6 +26,7 @@ export const ForgetPasswordApi = (data) => {
     console.log("ForgetPasswordApi--error-->", error)
   }
 }
+
 export const GenerateApi = () => {
   try {
     return axios.get(`${process.env.REACT_APP_BASE_URL}/user/generate`);

@@ -22,6 +22,7 @@ const MenuLayout = (props) => {
                 </Link>
                 <Nav>{admin && (<>
                     <button type="submit" className="btn btn-primary" style={{ marginRight: "20px" }} onClick={() => navigate("/change-password")}>Forget Password</button>
+                    
                     {admin === "admin" ? (<ul className="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
                         
                         <button type="submit" className="btn btn-primary" style={{ marginRight: "20px" }} onClick={() => navigate("/admin/usersData")}>Users Info</button>
