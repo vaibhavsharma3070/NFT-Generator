@@ -15,7 +15,6 @@ const ForgetPassword = () => {
   let navigate = useNavigate();
   const isAdmin = true;
   const [toast, setToast] = useState({ show: '', message: '', event: '' });
-
   const [formData, setFormData] = useState({ old_password: "", new_password: "" ,confirm_password: "" });
   const [formError, setFormError] = useState({});
   const submitHandler = () => {
