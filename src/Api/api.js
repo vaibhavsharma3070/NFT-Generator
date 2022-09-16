@@ -18,6 +18,14 @@ export const LoginApi = (data) => {
     console.log("LoginApi--error-->", error)
   }
 }
+export const ForgetPasswordApi = (data) => {
+  try {
+    return axios.post(`${process.env.REACT_APP_BASE_URL}/auth/changepassword`, data);
+  }
+  catch (error) {
+    console.log("ForgetPasswordApi--error-->", error)
+  }
+}
 export const GenerateApi = () => {
   try {
     return axios.get(`${process.env.REACT_APP_BASE_URL}/user/generate`);

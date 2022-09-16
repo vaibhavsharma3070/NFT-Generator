@@ -13,6 +13,7 @@ import { PrivateRoute } from "./PrivateRoute/PrivateRoute";
 import { ProtectedAdminRoute } from "./ProtectedRoute/ProtectedAdminRoute";
 import { ProtectedUserRoute } from "./ProtectedRoute/ProtectedUserRoute";
 import UserTable from "./pages/UserTable";
+import ForgetPassword from "./components/ForgetPassword";
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
             </Route>
             <Route element={<ProtectedAdminRoute />}>
               <Route path="/admin/home" element={<Admin />} />
+              <Route path="/change-password" element={<ForgetPassword />} />
               <Route path="/admin/usersData" element={<UserTable />} />
             </Route>
           </Route>
