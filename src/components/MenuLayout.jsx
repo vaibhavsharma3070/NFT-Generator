@@ -18,7 +18,7 @@ const MenuLayout = (props) => {
                     className="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none"
                 >
                     <img src={logo} alt="" height={60} width={60} className="me-3" />
-                    My NFT Machine
+                    <span style={{color:'#ffffff'}}>My NFT Machine</span>
                 </Link>
                 <Nav>{admin && (<>
                     <button type="submit" className="btn btn-primary" style={{ marginRight: "20px" }} onClick={() => navigate("/change-password")}>Forget Password</button>

@@ -66,7 +66,7 @@ const ForgetPassword = () => {
           <Col xs={5}>
             <Form>
               <Form.Group className="mb-3">
-                <Form.Label for="email">Old Password</Form.Label>
+                <Form.Label for="email" style={{color:'white'}}>Old Password</Form.Label>
                 <Form.Control
                   type="password"
                   placeholder="Enter Old Password"
@@ -79,7 +79,7 @@ const ForgetPassword = () => {
                 )}
               </Form.Group>
               <Form.Group className="mb-3">
-                <Form.Label for="password">New Password</Form.Label>
+                <Form.Label for="password" style={{color:'white'}}>New Password</Form.Label>
                 <Form.Control
                   type="password"
                   placeholder="Enter New Password"
@@ -92,7 +92,7 @@ const ForgetPassword = () => {
                 )}
               </Form.Group>
               <Form.Group className="mb-3">
-                <Form.Label for="password">Confirm Password</Form.Label>
+                <Form.Label for="password" style={{color:'white'}}>Confirm Password</Form.Label>
                 <Form.Control
                   type="password"
                   placeholder="Enter Confirm Password"

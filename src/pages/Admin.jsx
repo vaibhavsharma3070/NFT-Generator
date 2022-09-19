@@ -365,7 +365,7 @@ const Admin = () => {
           <div className="col-lg-4">
             <div className="nft-machine-box">
               <div>
-                <Form.Label>Layer type name</Form.Label>
+                <Form.Label style={{color:'white'}}>Layer type name</Form.Label>
                 <Form.Control
                   type="text"
                   name="directoryName"
@@ -373,12 +373,12 @@ const Admin = () => {
                   placeholder=" Please enter name...."
                 />
                 {formError?.directoryName && (
-                  <p className="text-danger">{formError?.directoryName}</p>
+                  <p className="text-danger" >{formError?.directoryName}</p>
                 )}
               </div>
               <div style={{ marginTop: "25px" }}>
                 <Form.Group controlId="formFileMultiple" className="mb-3">
-                  <Form.Label>Upload images</Form.Label>
+                  <Form.Label style={{color:'white'}}>Upload images</Form.Label>
                   <Form.Control type="file" multiple onChange={(e) => onImageChange(e)} />
                 </Form.Group>
                 {formImageError && (
@@ -402,7 +402,7 @@ const Admin = () => {
                   <>   {layerOrder?.map((data, index) => (
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                       <div>
-                        {data.layertype_name}
+                        <span style={{color:'white'}}>{data.layertype_name}</span> 
                       </div>
                       {/* <Form.Check
                         label={data.layertype_name}
@@ -423,7 +423,7 @@ const Admin = () => {
           </div>
           <div className="col-lg-4">
             <div className="nft-machine-box">
-              <Form.Label>Enter number of image length</Form.Label>
+              <Form.Label style={{color:'white'}}>Enter number of image length</Form.Label>
               <Form.Control
                 type="text"
                 name="imageLimit"
@@ -467,7 +467,7 @@ const Admin = () => {
                       <Droppable droppableId={data?.id}>
                         {(provided) => (
                           <div className="col-lg-5" style={{ marginRight: "25px", }} >
-                            <h2>{data?.id}</h2>
+                            <h2 style={{color:'white'}}>{data?.id}</h2>
                             <div style={{ backgroundColor: "#ef88b3", minHeight: "180px", borderRadius: "8px", padding: "20px" }} {...provided.droppableProps} ref={provided.innerRef}>
                               {data.list.map((text, index) => (
                                 <Draggable draggableId={text?.layertype_name} index={index} key={text?.layertype_name} >
@@ -477,8 +477,8 @@ const Admin = () => {
                                       {...provided.draggableProps}
                                       {...provided.dragHandleProps}
                                     >
-                                      <div style={{ border: "2px solid black", marginTop: "10px", fontSize: "16px" }}>
-                                        {text?.layertype_name}
+                                      <div style={{ border: "2px solid black", marginTop: "10px", fontSize: "16px" ,borderRadius:"10px" }}>
+                                       <span style={{color:'black',padding:"0px 20px"}}>{text?.layertype_name}</span>
                                       </div>
                                     </div>
                                   )}

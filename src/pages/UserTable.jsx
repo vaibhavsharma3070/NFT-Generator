@@ -50,24 +50,24 @@ const UserTable = () => {
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">First Name</th>
-                            <th scope="col">Last Name</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Role</th>
-                            <th scope="col">Status</th>
-                            <th scope="col"></th>
+                            <th scope="col" style={{color:'white'}}>#</th>
+                            <th scope="col" style={{color:'white'}}>First Name</th>
+                            <th scope="col" style={{color:'white'}}>Last Name</th>
+                            <th scope="col" style={{color:'white'}}>Email</th>
+                            <th scope="col" style={{color:'white'}}>Role</th>
+                            <th scope="col" style={{color:'white'}}>Status</th>
+                            <th scope="col" style={{color:'white'}}></th>
                         </tr>
                     </thead>
                     {userList?.map((data, index) => (<>
                         <tbody>
                             <tr>
-                                <th scope="row">{data.user_id}</th>
-                                <td>{data.user_firstname}</td>
-                                <td>{data.user_lastname}</td>
-                                <td>{data.user_email}</td>
-                                <td>{data.user_roles}</td>
-                                <td>{data?.user_is_active ? "Active" : "Deactive"}</td>
+                                <th scope="row"  style={{color:'white'}}>{data.user_id}</th>
+                                <td style={{color:'white'}}>{data.user_firstname}</td>
+                                <td style={{color:'white'}}>{data.user_lastname}</td>
+                                <td style={{color:'white'}}>{data.user_email}</td>
+                                <td style={{color:'white'}}>{data.user_roles}</td>
+                                <td style={{color:'white'}}>{data?.user_is_active ? "Active" : "Deactive"}</td>
                                 <td><span>
                                     {data?.user_is_active ? <Button className="my-2" onClick={() => updateUserStatus(data.user_id, false, index)} >Deactive</Button> : <Button className="my-2" onClick={() => updateUserStatus(data.user_id, true, index)} >Active</Button>}
                                 </span></td>

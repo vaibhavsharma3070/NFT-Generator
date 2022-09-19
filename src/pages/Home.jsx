@@ -49,7 +49,7 @@ const Home = () => {
         </button>
       </div>
       <br />
-      <span style={{ display: "flex", justifyContent: "center" }}>
+      <span style={{ display: "flex", justifyContent: "center",color:'white' }}>
         Try again if images are not downloaded automatically.
       </span>
     </div>

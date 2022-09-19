@@ -70,7 +70,7 @@ const Login = () => {
           <Col xs={5}>
             <Form>
               <Form.Group className="mb-3">
-                <Form.Label for="email">Email</Form.Label>
+                <Form.Label for="email" style={{color:'white'}}>Email</Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="Enter email"
@@ -83,7 +83,7 @@ const Login = () => {
                 )}
               </Form.Group>
               <Form.Group className="mb-3">
-                <Form.Label for="password">Password</Form.Label>
+                <Form.Label for="password" style={{color:'white'}}>Password</Form.Label>
                 <Form.Control
                   type="password"
                   placeholder="Enter Password"
@@ -103,11 +103,11 @@ const Login = () => {
                   Login
                 </Button>
                 <div>
-                  <Form.Text className="text-muted">
-                    {"New to MyNFT? "}
+                  <Form.Text style={{color:'white'}}>
+                    {"New to MyNFT ? "}
                   </Form.Text>
-                  <Form.Text className="text-muted">
-                    <Link to="/" className="">
+                  <Form.Text >
+                    <Link to="/" style={{textDecoration:"none"}}>
                       {" Register"}
                     </Link>
                   </Form.Text>

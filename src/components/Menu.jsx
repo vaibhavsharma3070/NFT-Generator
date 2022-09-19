@@ -12,7 +12,7 @@ const Menu = () => {
           className="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none"
         >
           <img src={logo} alt="" height={60} width={60} className="me-3" />
-          My NFT Machine
+          <span style={{color:'#ffffff'}}>My NFT Machine</span>
         </Link>
       </header>
     </Container>
