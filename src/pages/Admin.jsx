@@ -301,8 +301,10 @@ const Admin = () => {
     })
     .catch((error) => {
         console.log("error --> ", error);
-        setGenerateLoader(false) //new
-        setToast({ message: error.message, show: true, event: "danger", position: "bottom-end" }); //new
+        setGenerateLoader(false) 
+        //new added
+        setToast({ message: error.message, show: true, event: "danger", position: "bottom-end" }); 
+        //new added
         
       });
   };
