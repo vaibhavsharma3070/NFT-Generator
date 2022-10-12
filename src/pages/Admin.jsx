@@ -299,9 +299,10 @@ const Admin = () => {
       res.data.data.map((url) => download(url));
       setGenerateLoader(false)
     })
-      .catch((error) => {
+    .catch((error) => {
         console.log("error --> ", error);
-        setToast({ message: error.message, show: true, event: "danger", position: "top-end" });
+        setGenerateLoader(false)
+        setToast({ message: error.message, show: true, event: "danger", position: "bottom-end" });
       });
   };
 
